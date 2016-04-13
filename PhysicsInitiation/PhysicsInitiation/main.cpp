@@ -134,6 +134,8 @@ void main(int argc, char** argv)
 	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI2(mass2, fallMotionState2, fallShape, fallInertia2);
 	fallRigidBodyCI2.m_restitution = 0;
 	fallRigidBody2 = new btRigidBody(fallRigidBodyCI2);
+	fallRigidBody2->setCollisionFlags(fallRigidBody2->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	fallRigidBody2->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(fallRigidBody2);
 
 	//=============================================================
@@ -164,9 +166,9 @@ void RenderSceneCB()
 	y = y < 2 ? 2 : y;
 	fallRigidBody2->getMotionState()->getWorldTransform(trans);
 	trans.setOrigin(btVector3(x, y , 0));
-	fallRigidBody2->setWorldTransform(trans);
+	fallRigidBody2->getMotionState()->setWorldTransform(trans);
 
-	dynamicsWorld->stepSimulation(1 / 700.f, 10);
+	dynamicsWorld->stepSimulation(1 / 700.f, 1);
 
 	fallRigidBody->getMotionState()->getWorldTransform(trans);
 	uParticle[0] = trans.getOrigin().getX() / 50;

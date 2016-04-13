@@ -60,6 +60,7 @@ void RenderSceneCB();
 void installShaders();
 void specialKeys(int, int, int);
 void MouseMotion(int, int);
+void Timer(int);
 
 // Global Bullet objects
 btRigidBody* fallRigidBody;
@@ -75,11 +76,13 @@ void main(int argc, char** argv)
 	glutInitDisplayMode(GLUT_DEPTH | GLUT_RGB | GLUT_DOUBLE | GL_MULTISAMPLE);
 
 	glutInitWindowSize(width, height);
-	glutInitWindowPosition(1000, 100);
+	glutInitWindowPosition(700, 100);
 	glutCreateWindow("CubeTry");
 
 	glutDisplayFunc(RenderSceneCB);
+	//glutIdleFunc(RenderSceneCB); // Calls the function as many times as it can
 	glutSpecialFunc(specialKeys);
+	glutTimerFunc(10, Timer, 0);
 	glutPassiveMotionFunc(MouseMotion);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glewExperimental = GL_TRUE;
@@ -168,7 +171,7 @@ void RenderSceneCB()
 	trans.setOrigin(btVector3(x, y , 0));
 	fallRigidBody2->getMotionState()->setWorldTransform(trans);
 
-	dynamicsWorld->stepSimulation(1 / 700.f, 1);
+	dynamicsWorld->stepSimulation(1/30.f, 10000, 1/100.f);
 
 	fallRigidBody->getMotionState()->getWorldTransform(trans);
 	uParticle[0] = trans.getOrigin().getX() / 50;
@@ -213,7 +216,7 @@ void RenderSceneCB()
 	glDisableVertexAttribArray(1);
 
 	glutSwapBuffers();
-	glutPostRedisplay();
+	//glutPostRedisplay();
 
 }
 
@@ -249,4 +252,10 @@ void MouseMotion(int x, int y)
 {
 	mousePositionx = x;
 	mousePositiony = y;
+}
+
+void Timer(int value)
+{
+	glutPostRedisplay();
+	glutTimerFunc(10, Timer, 0);
 }

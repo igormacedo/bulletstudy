@@ -54,13 +54,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Igor Macedo\Downloads\bullet3-2.83.7\bullet3-2.83.7\src;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;C:\Users\Igor Macedo\Downloads\bullet3-2.83.7\bullet3-2.83.7\src;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet\lib\Debug;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet\lib\Debug;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeglut.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>

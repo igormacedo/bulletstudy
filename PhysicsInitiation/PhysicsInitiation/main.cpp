@@ -111,8 +111,8 @@ void main(int argc, char** argv)
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
-	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btCollisionShape* groundShape = new btBoxShape(btVector3(5, 5, 0));
+	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	//btCollisionShape* groundShape = new btBoxShape(btVector3(0, 1, 0));
 	btCollisionShape* fallShape = new btSphereShape(1);
 
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
@@ -121,7 +121,7 @@ void main(int argc, char** argv)
 	groundRigidBody->setRestitution(btScalar(1));
 	dynamicsWorld->addRigidBody(groundRigidBody);
 
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0.1, 50, 0)));
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
 	btScalar mass = 1;
 	btVector3 fallInertia(0, 0, 0);
 	fallShape->calculateLocalInertia(mass, fallInertia);
@@ -166,7 +166,7 @@ void RenderSceneCB()
 	
 	float x = ((mousePositionx - width / 2) / (float)(width / 2))* 115.2;
 	float y = ((mousePositiony - height / 2) / (float)(height / 2))*-86.5;
-	y = y < 2 ? 2 : y;
+	//y = y < 2 ? 2 : y;
 	fallRigidBody2->getMotionState()->getWorldTransform(trans);
 	trans.setOrigin(btVector3(x, y , 0));
 	fallRigidBody2->getMotionState()->setWorldTransform(trans);

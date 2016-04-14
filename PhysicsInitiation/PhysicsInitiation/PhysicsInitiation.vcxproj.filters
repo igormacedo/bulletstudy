@@ -31,6 +31,9 @@
     <Filter Include="Bullet Engine\Source">
       <UniqueIdentifier>{d3f3248f-3cf9-42b9-b9c7-11743ce26974}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Objects">
+      <UniqueIdentifier>{b8d0fe60-72fe-4f34-bb5b-314c7c4a1ac0}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp">
@@ -446,6 +449,9 @@
     </ClCompile>
     <ClCompile Include="Dependencies\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.cpp">
       <Filter>Bullet Engine\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="Point.cpp">
+      <Filter>Objects</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1081,6 +1087,9 @@
     </ClInclude>
     <ClInclude Include="Dependencies\bullet\BulletCollision\CollisionDispatch\SphereTriangleDetector.h">
       <Filter>Bullet Engine\Headers</Filter>
+    </ClInclude>
+    <ClInclude Include="Point.h">
+      <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

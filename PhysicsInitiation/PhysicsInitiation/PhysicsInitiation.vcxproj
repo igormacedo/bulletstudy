@@ -221,6 +221,7 @@
     <ClCompile Include="Dependencies\bullet\LinearMath\btVector3.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="Particle.cpp" />
+    <ClCompile Include="Point.cpp" />
     <ClCompile Include="Shader_Manager.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -434,6 +435,7 @@
     <ClInclude Include="Dependencies\bullet\LinearMath\btTransformUtil.h" />
     <ClInclude Include="Dependencies\bullet\LinearMath\btVector3.h" />
     <ClInclude Include="Particle.h" />
+    <ClInclude Include="Point.h" />
     <ClInclude Include="Shader_Manager.h" />
   </ItemGroup>
   <ItemGroup>

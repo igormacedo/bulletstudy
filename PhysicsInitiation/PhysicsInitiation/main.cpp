@@ -4,6 +4,7 @@
 #include "glm\glm\gtc\matrix_transform.hpp"
 #include "Shader_Manager.h"
 #include "btBulletDynamicsCommon.h"
+#include "Point.h"
 
 #include <iostream>
 
@@ -62,6 +63,8 @@ void specialKeys(int, int, int);
 void MouseMotion(int, int);
 void Timer(int);
 
+Point *point, *p2, *p3;
+
 // Global Bullet objects
 btRigidBody* fallRigidBody;
 btRigidBody* fallRigidBody2;
@@ -87,6 +90,11 @@ void main(int argc, char** argv)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glewExperimental = GL_TRUE;
 	glewInit();
+
+	point = new Point(vec3(0.3, 0.3, 0.0));
+	p2 = new Point(vec3(0.0, 0.0, 0.0), vec3(0.9,0.9,0.9));
+	p3 = new Point(vec3(0.0, 0.5, 0.0));
+	
 
 	glGenBuffers(1, &VBO);
 	glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -183,10 +191,10 @@ void RenderSceneCB()
 	uParticle[9] = trans.getOrigin().getY() / 50;
 	uParticle[10] = trans.getOrigin().getZ() / 50;
 
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uParticle), uParticle, GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(uParticle), uParticle, GL_STATIC_DRAW);
 
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 
 	mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	glm::mat4 Model = glm::mat4(1.0f);
@@ -200,20 +208,25 @@ void RenderSceneCB()
 	//GLint projectionMatrixUniformLocation = glGetUniformLocation(programID, "projectionMatrix");
 	GLint mvpMatrixUniformLocation = glGetUniformLocation(programID, "mvpMatrix");
 
-	glUniformMatrix4fv(mvpMatrixUniformLocation, 1, GL_FALSE, &mvp[0][0]);
+	//--glUniformMatrix4fv(mvpMatrixUniformLocation, 1, GL_FALSE, &mvp[0][0]);
 	//glUniformMatrix4fv(projectionMatrixUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
 
-	glEnableVertexAttribArray(0);
-	glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
-	glEnableVertexAttribArray(1);
-	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
+	//--glEnableVertexAttribArray(0);
+	//--glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
+	//--glEnableVertexAttribArray(1);
+	//--glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
 
-	glEnable(GL_POINT_SMOOTH);
-	glPointSize(10);
-	glDrawArrays(GL_POINTS, 0, 2);
+	//--glEnable(GL_POINT_SMOOTH);
+	//--glPointSize(10);
+	//--glDrawArrays(GL_POINTS, 0, 2);
 	//glDrawElements(GL_TRIANGLES, 6 * 2 * 3, GL_UNSIGNED_INT, (void*)0);
-	glDisableVertexAttribArray(0);
-	glDisableVertexAttribArray(1);
+	//--glDisableVertexAttribArray(0);
+	//--glDisableVertexAttribArray(1);
+
+	point->UpdatePosition(vec3(x/50, y/50, 0));
+	point->DrawObject(programID, mvp);
+	p2->DrawObject(programID, mvp);
+	p3->DrawObject(programID, mvp);
 
 	glutSwapBuffers();
 	//glutPostRedisplay();

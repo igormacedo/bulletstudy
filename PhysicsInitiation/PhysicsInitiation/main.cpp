@@ -70,6 +70,7 @@ btRigidBody* fallRigidBody;
 btRigidBody* fallRigidBody2;
 btDiscreteDynamicsWorld* dynamicsWorld;
 
+bool debug = true;
 
 void main(int argc, char** argv)
 {
@@ -92,18 +93,17 @@ void main(int argc, char** argv)
 	glewInit();
 
 	point = new Point(vec3(0.0, 0.4, 0.0));
-	p2 = new Point(vec3(-0.1, 0.4, 0.0), vec3(0.9,0.9,0.9));
+	p2 = new Point(vec3(-0.0, 0.4, 0.0), vec3(0.9,0.9,0.9));
 	p3 = new Point(vec3(0.0, 0.5, 0.0));
 	
 
-	glGenBuffers(1, &VBO);
-	glBindBuffer(GL_ARRAY_BUFFER, VBO);
+	//glGenBuffers(1, &VBO);
+	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
 	//glBufferData(GL_ARRAY_BUFFER, sizeof(vertexDataforIndex), vertexDataforIndex, GL_STATIC_DRAW);
-	glBufferData(GL_ARRAY_BUFFER, sizeof(uParticle), uParticle, GL_STATIC_DRAW);
-
-	glGenBuffers(1, &indexBuffer);
-	glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
-	glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 2 * 3 * sizeof(GLuint), &indexData[0], GL_STATIC_DRAW);
+	//glBufferData(GL_ARRAY_BUFFER, sizeof(uParticle), uParticle, GL_STATIC_DRAW);
+	//glGenBuffers(1, &indexBuffer);
+	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
+	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 2 * 3 * sizeof(GLuint), &indexData[0], GL_STATIC_DRAW);
 
 	cout << "OpenGL Version: " << (char*)glGetString(GL_VERSION) << " | Shader Language Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << "| Glut Version : " << glutGet(GLUT_VERSION) << endl;
 
@@ -119,17 +119,25 @@ void main(int argc, char** argv)
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
-	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	//btCollisionShape* groundShape = new btBoxShape(btVector3(0, 1, 0));
-	//btCollisionShape* fallShape = new btSphereShape(1);
-
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 20, 0)));
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 	groundRigidBody->setRestitution(btScalar(1));
 	dynamicsWorld->addRigidBody(groundRigidBody);
 
-	/*btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
+	btCollisionShape* groundShape1 = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	//btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
+	btDefaultMotionState* groundMotionState1 = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -10, 0)));
+	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI1(0, groundMotionState1, groundShape1, btVector3(0, 0, 0));
+	btRigidBody* groundRigidBody1 = new btRigidBody(groundRigidBodyCI1);
+	groundRigidBody1->setRestitution(btScalar(1));
+	dynamicsWorld->addRigidBody(groundRigidBody1);
+
+
+	/*btCollisionShape* fallShape = new btSphereShape(1);
+	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
 	btScalar mass = 1;
 	btVector3 fallInertia(0, 0, 0);
 	fallShape->calculateLocalInertia(mass, fallInertia);
@@ -149,19 +157,20 @@ void main(int argc, char** argv)
 	fallRigidBody2->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(fallRigidBody2);*/
 
-	dynamicsWorld->addRigidBody(p2->getRigidBody());
-	dynamicsWorld->addRigidBody(p3->getRigidBody());
-
 	point->getRigidBody()->setCollisionFlags(point->getRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	point->getRigidBody()->setActivationState(DISABLE_DEACTIVATION);
-
 	dynamicsWorld->addRigidBody(point->getRigidBody());
+
+	p2->getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
+	dynamicsWorld->addRigidBody(p2->getRigidBody());
+	p3->getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
+	dynamicsWorld->addRigidBody(p3->getRigidBody());
+	
 
 	//=============================================================
 
 	installShaders();
 	glutMainLoop();
-
 
 	//== exit ====================================================
 
@@ -194,15 +203,12 @@ void RenderSceneCB()
 	//GLint modelTransformMatrixUniformLocation = glGetUniformLocation(programID, "modelTransdformMatrix");
 	//GLint projectionMatrixUniformLocation = glGetUniformLocation(programID, "projectionMatrix");
 	//--GLint mvpMatrixUniformLocation = glGetUniformLocation(programID, "mvpMatrix");
-
 	//--glUniformMatrix4fv(mvpMatrixUniformLocation, 1, GL_FALSE, &mvp[0][0]);
 	//glUniformMatrix4fv(projectionMatrixUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
-
 	//--glEnableVertexAttribArray(0);
 	//--glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
 	//--glEnableVertexAttribArray(1);
 	//--glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
-
 	//--glEnable(GL_POINT_SMOOTH);
 	//--glPointSize(10);
 	//--glDrawArrays(GL_POINTS, 0, 2);
@@ -216,14 +222,19 @@ void RenderSceneCB()
 	point->updatePosition(vec3(x/50, y/50, 0));
 	point->getRigidBody()->getMotionState()->setWorldTransform(trans);
 	point->drawObject(programID, mvp);
+	if (debug) cout << "x:" << x << " y:" << y << " z:" << 0 << endl;
 
 	p2->getRigidBody()->getMotionState()->getWorldTransform(trans);
 	p2->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, trans.getOrigin().getZ() / 50));
+	//p2->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, 0.0f));
 	p2->drawObject(programID, mvp);
+	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl;
 
 	p3->getRigidBody()->getMotionState()->getWorldTransform(trans);
-	p3->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, trans.getOrigin().getZ() / 50));
+	//p3->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, trans.getOrigin().getZ() / 50));
+	p3->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, 0.0f));
 	p3->drawObject(programID, mvp);
+	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl << endl;
 
 	glutSwapBuffers();
 }

@@ -120,12 +120,40 @@ void main(int argc, char** argv)
 	dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
 	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
-	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 20, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	groundRigidBody->setRestitution(btScalar(1));
-	dynamicsWorld->addRigidBody(groundRigidBody);
+	//btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
+	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 20, 0)));
+	//btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	//btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+	//groundRigidBody->setRestitution(btScalar(1));
+	//dynamicsWorld->addRigidBody(groundRigidBody);
+
+	btTriangleMesh *mTriMesh = new btTriangleMesh();
+	btVector3 v0(20, 0, 20);
+	btVector3 v1(20, 0, -20);
+	btVector3 v2(-20, 0, 20);
+	btVector3 v3(-20, 0, -20);
+	btVector3 v4(20, 40, 20);
+	btVector3 v5(20, 40, -20);
+	btVector3 v6(-20, 40, 20);
+	btVector3 v7(-20, 40, -20);
+
+	mTriMesh->addTriangle(v2,v3,v7);
+	mTriMesh->addTriangle(v2,v7,v6);
+	mTriMesh->addTriangle(v0,v1,v2);
+	mTriMesh->addTriangle(v1,v2,v3);
+	mTriMesh->addTriangle(v0,v1,v5);
+	mTriMesh->addTriangle(v0,v5,v4);
+	//mTriMesh->addTriangle();
+	//mTriMesh->addTriangle();
+	//mTriMesh->addTriangle();
+	//mTriMesh->addTriangle();
+
+	btCollisionShape* boxShape = new btBvhTriangleMeshShape(mTriMesh,true);
+	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 10, 0)));
+	btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(0, boxMotionState, boxShape, btVector3(0, 0, 0));
+	btRigidBody* boxRigidBody = new btRigidBody(boxRigidBodyCI);
+	boxRigidBody->setRestitution(btScalar(0.9));
+	dynamicsWorld->addRigidBody(boxRigidBody);
 
 	btCollisionShape* groundShape1 = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	//btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));

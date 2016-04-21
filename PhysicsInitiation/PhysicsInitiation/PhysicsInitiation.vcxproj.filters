@@ -453,6 +453,9 @@
     <ClCompile Include="Point.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="TriangleMesh.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Particle.h">
@@ -1089,6 +1092,9 @@
       <Filter>Bullet Engine\Headers</Filter>
     </ClInclude>
     <ClInclude Include="Point.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="TriangleMesh.h">
       <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>

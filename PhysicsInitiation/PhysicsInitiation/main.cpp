@@ -13,8 +13,11 @@ using namespace Managers;
 using glm::vec3;
 using glm::mat4;
 
+float screenRatio = 0.75;
 int width = 1024;
-int height = 768;
+int height = width*screenRatio;
+float orthoHalfWidth = 66.66f;
+float orthoHalfHeight = orthoHalfWidth*screenRatio;
 
 int mousePositionx;
 int mousePositiony;
@@ -52,7 +55,6 @@ GLfloat uParticle[] = {
 };
 
 Shader_Manager shaderManager;
-//Particle particle;
 
 GLuint VBO;
 GLuint indexBuffer;
@@ -92,9 +94,9 @@ void main(int argc, char** argv)
 	glewExperimental = GL_TRUE;
 	glewInit();
 
-	point = new Point(vec3(0.0, 0.4, 0.0));
-	p2 = new Point(vec3(-0.0, 0.4, 0.0), vec3(0.9,0.9,0.9));
-	p3 = new Point(vec3(0.0, 0.5, 0.0));
+	point = new Point(vec3(0.0, 10, 0.0));
+	p2 = new Point(vec3(0.0, 10, 0.0), vec3(0.9,0.9,0.9));
+	p3 = new Point(vec3(0.0, 20, 0.0));
 	
 
 	//glGenBuffers(1, &VBO);
@@ -128,40 +130,51 @@ void main(int argc, char** argv)
 	//dynamicsWorld->addRigidBody(groundRigidBody);
 
 	btTriangleMesh *mTriMesh = new btTriangleMesh();
-	btVector3 v0(20, 0, 20);
+	/*btVector3 v0(20, 0, 20);
 	btVector3 v1(20, 0, -20);
 	btVector3 v2(-20, 0, 20);
 	btVector3 v3(-20, 0, -20);
 	btVector3 v4(20, 40, 20);
 	btVector3 v5(20, 40, -20);
 	btVector3 v6(-20, 40, 20);
-	btVector3 v7(-20, 40, -20);
+	btVector3 v7(-20, 40, -20);*/
 
-	mTriMesh->addTriangle(v2,v3,v7);
+	cout << mTriMesh->findOrAddVertex(btVector3(20, 0, 20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(20, 0, -20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(-20, 0, 20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(-20, 0, -20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(20, 40, 20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(20, 40, -20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(-20, 40, 20), false);
+	cout << mTriMesh->findOrAddVertex(btVector3(-20, 40, -20), false);
+
+	mTriMesh->addTriangleIndices(2, 3, 7);
+	mTriMesh->addTriangleIndices(2, 7, 6);
+	mTriMesh->addTriangleIndices(0, 1, 2);
+	mTriMesh->addTriangleIndices(1, 2, 3);
+	mTriMesh->addTriangleIndices(0, 1, 5);
+	mTriMesh->addTriangleIndices(0, 5, 4);
+
+	/*mTriMesh->addTriangle(v2,v3,v7);
 	mTriMesh->addTriangle(v2,v7,v6);
 	mTriMesh->addTriangle(v0,v1,v2);
 	mTriMesh->addTriangle(v1,v2,v3);
 	mTriMesh->addTriangle(v0,v1,v5);
-	mTriMesh->addTriangle(v0,v5,v4);
-	//mTriMesh->addTriangle();
-	//mTriMesh->addTriangle();
-	//mTriMesh->addTriangle();
-	//mTriMesh->addTriangle();
+	mTriMesh->addTriangle(v0,v5,v4);*/
 
 	btCollisionShape* boxShape = new btBvhTriangleMeshShape(mTriMesh,true);
-	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 10, 0)));
+	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 5, 0)));
 	btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(0, boxMotionState, boxShape, btVector3(0, 0, 0));
 	btRigidBody* boxRigidBody = new btRigidBody(boxRigidBodyCI);
 	boxRigidBody->setRestitution(btScalar(0.9));
 	dynamicsWorld->addRigidBody(boxRigidBody);
 
-	btCollisionShape* groundShape1 = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	//btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
-	btDefaultMotionState* groundMotionState1 = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -10, 0)));
-	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI1(0, groundMotionState1, groundShape1, btVector3(0, 0, 0));
-	btRigidBody* groundRigidBody1 = new btRigidBody(groundRigidBodyCI1);
-	groundRigidBody1->setRestitution(btScalar(1));
-	dynamicsWorld->addRigidBody(groundRigidBody1);
+	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
+	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
+	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
+	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
+	groundRigidBody->setRestitution(btScalar(1));
+	dynamicsWorld->addRigidBody(groundRigidBody);
 
 
 	/*btCollisionShape* fallShape = new btSphereShape(1);
@@ -215,12 +228,13 @@ void RenderSceneCB()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	float x = ((mousePositionx - width / 2) / (float)(width / 2))* 115.2;
-	float y = ((mousePositiony - height / 2) / (float)(height / 2))*-86.5;
+	float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
+	float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
 	dynamicsWorld->stepSimulation(1/30.f, 10000, 1/100.f);
 
-	mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.1f, 100.0f);
+	//mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 View = glm::lookAt(
 		glm::vec3(rotate_x, rotate_y, 3),  // Camera is at (4,3,3), in World Space
@@ -247,20 +261,18 @@ void RenderSceneCB()
 	btTransform trans;
 	point->getRigidBody()->getMotionState()->getWorldTransform(trans);
 	trans.setOrigin(btVector3(x, y, 0));
-	point->updatePosition(vec3(x/50, y/50, 0));
+	point->updatePosition(vec3(x, y, 0));
 	point->getRigidBody()->getMotionState()->setWorldTransform(trans);
 	point->drawObject(programID, mvp);
 	if (debug) cout << "x:" << x << " y:" << y << " z:" << 0 << endl;
 
 	p2->getRigidBody()->getMotionState()->getWorldTransform(trans);
-	p2->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, trans.getOrigin().getZ() / 50));
-	//p2->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, 0.0f));
+	p2->updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
 	p2->drawObject(programID, mvp);
 	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl;
 
 	p3->getRigidBody()->getMotionState()->getWorldTransform(trans);
-	//p3->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, trans.getOrigin().getZ() / 50));
-	p3->updatePosition(vec3(trans.getOrigin().getX() / 50, trans.getOrigin().getY() / 50, 0.0f));
+	p3->updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
 	p3->drawObject(programID, mvp);
 	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl << endl;
 

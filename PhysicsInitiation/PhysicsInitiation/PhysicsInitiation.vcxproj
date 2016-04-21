@@ -223,6 +223,7 @@
     <ClCompile Include="Particle.cpp" />
     <ClCompile Include="Point.cpp" />
     <ClCompile Include="Shader_Manager.cpp" />
+    <ClCompile Include="TriangleMesh.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Dependencies\bullet\BulletCollision\BroadphaseCollision\btAxisSweep3.h" />
@@ -437,6 +438,7 @@
     <ClInclude Include="Particle.h" />
     <ClInclude Include="Point.h" />
     <ClInclude Include="Shader_Manager.h" />
+    <ClInclude Include="TriangleMesh.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="FragmentShader.glsl" />

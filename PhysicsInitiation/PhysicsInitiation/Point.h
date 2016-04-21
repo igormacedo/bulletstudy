@@ -10,7 +10,7 @@ using namespace glm;
 class Point
 {
 public:
-	Point(vec3 = vec3(0.0f, 0.0f, 0.0f), vec3 = vec3(0.0f, 0.0f, 1.0f));
+	Point(vec3 = vec3(0.0f, 0.0f, 0.0f), vec3 = vec3(0.7f, 0.0f, 1.0f));
 	~Point();
 
 	void updatePosition(vec3);
@@ -21,6 +21,8 @@ private:
 	//Object States
 	vec3 position;
 	vec3 color;
+	btScalar radio = 0.70f;
+	btScalar mass = 1.0f;
 
 	//OpenGL rendering variables
 	GLuint VAO;
@@ -30,7 +32,7 @@ private:
 	//Bullet simulation Objects
 	btCollisionShape *sphereShape;
 	btDefaultMotionState *sphereMotionState;
-	btScalar mass;
+	btScalar massRigidBody;
 	btVector3 sphereInertia;
 	btRigidBody::btRigidBodyConstructionInfo *sphereRigidBodyCI;
 	btRigidBody *sphereRigidBody;

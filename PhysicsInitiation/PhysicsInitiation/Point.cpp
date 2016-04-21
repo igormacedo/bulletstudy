@@ -29,11 +29,11 @@ Point::~Point()
 
 void Point::setupBulletRigidBody()
 {
-	sphereShape = new btSphereShape(1);
+	sphereShape = new btSphereShape(radio);
 	sphereMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(position.x, position.y, position.z)));
-	mass = 1;
+	massRigidBody = this->mass;
 	sphereInertia = btVector3(0, 0, 0);
-	sphereShape->calculateLocalInertia(mass, sphereInertia);
+	sphereShape->calculateLocalInertia(massRigidBody, sphereInertia);
 	sphereRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(mass, sphereMotionState, sphereShape, sphereInertia);
 	sphereRigidBody = new btRigidBody(*sphereRigidBodyCI);
 	sphereRigidBody->setRestitution(btScalar(0.95));
@@ -72,7 +72,7 @@ void Point::drawObject(GLint shaderProgram, mat4 mvp)
 	glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
 
 	glEnable(GL_POINT_SMOOTH);
-	glPointSize(15);
+	glPointSize(14*this->radio);
 
 	glDrawArrays(GL_POINTS, 0, 1);
 

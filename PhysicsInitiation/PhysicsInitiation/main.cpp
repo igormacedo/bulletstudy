@@ -5,6 +5,7 @@
 #include "Shader_Manager.h"
 #include "btBulletDynamicsCommon.h"
 #include "Point.h"
+#include "TriangleMesh.h"
 
 #include <iostream>
 
@@ -29,30 +30,18 @@ GLint programID;
 
 GLfloat vertexDataforIndex[] = {
 	//  X     Y     Z      U    V     R     G     B
-	-1.0f, -1.0f, -1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-	1.0f, -1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-	-1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,
-	1.0f, 1.0f, -1.0f, 1.0f, 0.0f, 1.0f, 1.0f, 0.0f,
-	-1.0f, -1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,
-	1.0f, -1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,
-	-1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,
-	1.0f, 1.0f, 1.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,
+	-20.0f, 0.0f, -20.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f, //0
+	20.0f, 0.0f, -20.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,  //1
+	-20.0f, 40.0f, -20.0f, 1.0f, 0.0f, 0.0f, 1.0f, 1.0f,  //2
+	20.0f, 40.0f, -20.0f, 20.0f, 0.0f, 1.0f, 1.0f, 0.0f,   //3
+	-20.0f, 0.0f, 20.0f, 0.0f, 0.0f, 1.0f, 0.0f, 1.0f,  //4
+	20.0f, 0.0f, 20.0f, 1.0f, 0.0f, 0.0f, 0.0f, 1.0f,   //5
+	-20.0f, 40.0f, 20.0f, 1.0f, 0.0f, 0.0f, 1.0f, 0.0f,   //6
+	20.0f, 40.0f, 20.0f, 1.0f, 0.0f, 0.0f, 0.0f, 0.0f,    //7
 };
 
 GLuint indexData[] = {
-	0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 1, 5, 7, 1, 7, 3, 0, 4, 6, 0, 6, 2, 2, 3, 7, 2, 7, 6, 0, 1, 5, 0, 5, 4
-};
-
-float Vertices[9] = {
--1.0f, -1.0f, 0.0f,
-1.0f, -1.0f, 0.0f,
-0.0f, 1.0f, 0.0f };
-
-GLfloat uParticle[] = {
- //  X     Y     Z      U    V     R     G     B
-	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f,
-	0.0f, 0.0f, 0.0f, 0.0f, 0.0f, 1.0f, 0.0f, 0.0f
-};
+	0, 1, 2, 1, 2, 3, 4, 5, 6, 5, 6, 7, 1, 5, 7, 1, 7, 3, 0, 4, 6, 0, 6, 2, 2, 3, 7, 2, 7, 6, 0, 1, 5, 0, 5, 4};
 
 Shader_Manager shaderManager;
 
@@ -66,10 +55,9 @@ void MouseMotion(int, int);
 void Timer(int);
 
 Point *point, *p2, *p3;
+TriangleMesh *tm;
 
 // Global Bullet objects
-btRigidBody* fallRigidBody;
-btRigidBody* fallRigidBody2;
 btDiscreteDynamicsWorld* dynamicsWorld;
 
 bool debug = true;
@@ -93,11 +81,6 @@ void main(int argc, char** argv)
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glewExperimental = GL_TRUE;
 	glewInit();
-
-	point = new Point(vec3(0.0, 10, 0.0));
-	p2 = new Point(vec3(0.0, 10, 0.0), vec3(0.9,0.9,0.9));
-	p3 = new Point(vec3(0.0, 20, 0.0));
-	
 
 	//glGenBuffers(1, &VBO);
 	//glBindBuffer(GL_ARRAY_BUFFER, VBO);
@@ -163,11 +146,13 @@ void main(int argc, char** argv)
 	mTriMesh->addTriangle(v0,v5,v4);*/
 
 	btCollisionShape* boxShape = new btBvhTriangleMeshShape(mTriMesh,true);
-	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 5, 0)));
+	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
 	btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(0, boxMotionState, boxShape, btVector3(0, 0, 0));
 	btRigidBody* boxRigidBody = new btRigidBody(boxRigidBodyCI);
 	boxRigidBody->setRestitution(btScalar(0.9));
-	dynamicsWorld->addRigidBody(boxRigidBody);
+	//boxRigidBody->setCollisionFlags(boxRigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	//boxRigidBody->setActivationState(DISABLE_DEACTIVATION);
+	//dynamicsWorld->addRigidBody(boxRigidBody);
 
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
@@ -197,6 +182,13 @@ void main(int argc, char** argv)
 	fallRigidBody2->setCollisionFlags(fallRigidBody2->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	fallRigidBody2->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(fallRigidBody2);*/
+
+	tm = new TriangleMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
+	dynamicsWorld->addRigidBody(tm->getRigidBody());
+
+	point = new Point(vec3(0.0, 10, 0.0));
+	p2 = new Point(vec3(20.0, 10, 0.0), vec3(0.9, 0.9, 0.9));
+	p3 = new Point(vec3(0.0, 20, 0.0));
 
 	point->getRigidBody()->setCollisionFlags(point->getRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
 	point->getRigidBody()->setActivationState(DISABLE_DEACTIVATION);
@@ -233,30 +225,14 @@ void RenderSceneCB()
 
 	dynamicsWorld->stepSimulation(1/30.f, 10000, 1/100.f);
 
-	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.1f, 100.0f);
-	//mat4 projectionMatrix = glm::perspective(glm::radians(60.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
+	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.001f, 1000.0f);
+	//mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
 	glm::mat4 Model = glm::mat4(1.0f);
 	glm::mat4 View = glm::lookAt(
 		glm::vec3(rotate_x, rotate_y, 3),  // Camera is at (4,3,3), in World Space
 		glm::vec3(0, 0, 0),  // and looks at the origin
 		glm::vec3(0, 1, 0)); // Head is up (set to 0,-1,0 to look upside-down)
 	glm::mat4 mvp = projectionMatrix * View * Model;
-
-	//GLint modelTransformMatrixUniformLocation = glGetUniformLocation(programID, "modelTransdformMatrix");
-	//GLint projectionMatrixUniformLocation = glGetUniformLocation(programID, "projectionMatrix");
-	//--GLint mvpMatrixUniformLocation = glGetUniformLocation(programID, "mvpMatrix");
-	//--glUniformMatrix4fv(mvpMatrixUniformLocation, 1, GL_FALSE, &mvp[0][0]);
-	//glUniformMatrix4fv(projectionMatrixUniformLocation, 1, GL_FALSE, &projectionMatrix[0][0]);
-	//--glEnableVertexAttribArray(0);
-	//--glVertexAttribPointer(0, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), 0);
-	//--glEnableVertexAttribArray(1);
-	//--glVertexAttribPointer(1, 3, GL_FLOAT, GL_FALSE, 8 * sizeof(GLfloat), (void*)(5 * sizeof(GLfloat)));
-	//--glEnable(GL_POINT_SMOOTH);
-	//--glPointSize(10);
-	//--glDrawArrays(GL_POINTS, 0, 2);
-	//glDrawElements(GL_TRIANGLES, 6 * 2 * 3, GL_UNSIGNED_INT, (void*)0);
-	//--glDisableVertexAttribArray(0);
-	//--glDisableVertexAttribArray(1);
 
 	btTransform trans;
 	point->getRigidBody()->getMotionState()->getWorldTransform(trans);
@@ -275,6 +251,8 @@ void RenderSceneCB()
 	p3->updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
 	p3->drawObject(programID, mvp);
 	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl << endl;
+
+	tm->drawObject(programID, mvp);
 
 	glutSwapBuffers();
 }

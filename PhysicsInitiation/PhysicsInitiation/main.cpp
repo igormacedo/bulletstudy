@@ -7,6 +7,7 @@
 #include "Point.h"
 #include "TriangleMesh.h"
 
+#include <list>
 #include <iostream>
 
 using namespace std;
@@ -53,14 +54,18 @@ void installShaders();
 void specialKeys(int, int, int);
 void MouseMotion(int, int);
 void Timer(int);
+void mouseClick(int, int, int, int);
 
+
+//
+list<Point> points;
 Point *point, *p2, *p3;
 TriangleMesh *tm;
 
 // Global Bullet objects
 btDiscreteDynamicsWorld* dynamicsWorld;
 
-bool debug = true;
+bool debug = false;
 
 void main(int argc, char** argv)
 {
@@ -78,6 +83,7 @@ void main(int argc, char** argv)
 	glutSpecialFunc(specialKeys);
 	glutTimerFunc(10, Timer, 0);
 	glutPassiveMotionFunc(MouseMotion);
+	glutMouseFunc(mouseClick);
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
 	glewExperimental = GL_TRUE;
 	glewInit();
@@ -104,84 +110,12 @@ void main(int argc, char** argv)
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
 	dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
-	//btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
-	//btCollisionShape* groundShape = new btBoxShape(btVector3(20, 20, 20));
-	//btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 20, 0)));
-	//btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
-	//btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
-	//groundRigidBody->setRestitution(btScalar(1));
-	//dynamicsWorld->addRigidBody(groundRigidBody);
-
-	btTriangleMesh *mTriMesh = new btTriangleMesh();
-	/*btVector3 v0(20, 0, 20);
-	btVector3 v1(20, 0, -20);
-	btVector3 v2(-20, 0, 20);
-	btVector3 v3(-20, 0, -20);
-	btVector3 v4(20, 40, 20);
-	btVector3 v5(20, 40, -20);
-	btVector3 v6(-20, 40, 20);
-	btVector3 v7(-20, 40, -20);*/
-
-	cout << mTriMesh->findOrAddVertex(btVector3(20, 0, 20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(20, 0, -20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(-20, 0, 20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(-20, 0, -20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(20, 40, 20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(20, 40, -20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(-20, 40, 20), false);
-	cout << mTriMesh->findOrAddVertex(btVector3(-20, 40, -20), false);
-
-	mTriMesh->addTriangleIndices(2, 3, 7);
-	mTriMesh->addTriangleIndices(2, 7, 6);
-	mTriMesh->addTriangleIndices(0, 1, 2);
-	mTriMesh->addTriangleIndices(1, 2, 3);
-	mTriMesh->addTriangleIndices(0, 1, 5);
-	mTriMesh->addTriangleIndices(0, 5, 4);
-
-	/*mTriMesh->addTriangle(v2,v3,v7);
-	mTriMesh->addTriangle(v2,v7,v6);
-	mTriMesh->addTriangle(v0,v1,v2);
-	mTriMesh->addTriangle(v1,v2,v3);
-	mTriMesh->addTriangle(v0,v1,v5);
-	mTriMesh->addTriangle(v0,v5,v4);*/
-
-	btCollisionShape* boxShape = new btBvhTriangleMeshShape(mTriMesh,true);
-	btDefaultMotionState* boxMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
-	btRigidBody::btRigidBodyConstructionInfo boxRigidBodyCI(0, boxMotionState, boxShape, btVector3(0, 0, 0));
-	btRigidBody* boxRigidBody = new btRigidBody(boxRigidBodyCI);
-	boxRigidBody->setRestitution(btScalar(0.9));
-	//boxRigidBody->setCollisionFlags(boxRigidBody->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-	//boxRigidBody->setActivationState(DISABLE_DEACTIVATION);
-	//dynamicsWorld->addRigidBody(boxRigidBody);
-
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
 	btDefaultMotionState* groundMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, -1, 0)));
 	btRigidBody::btRigidBodyConstructionInfo groundRigidBodyCI(0, groundMotionState, groundShape, btVector3(0, 0, 0));
 	btRigidBody* groundRigidBody = new btRigidBody(groundRigidBodyCI);
 	groundRigidBody->setRestitution(btScalar(1));
 	dynamicsWorld->addRigidBody(groundRigidBody);
-
-
-	/*btCollisionShape* fallShape = new btSphereShape(1);
-	btDefaultMotionState* fallMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 50, 0)));
-	btScalar mass = 1;
-	btVector3 fallInertia(0, 0, 0);
-	fallShape->calculateLocalInertia(mass, fallInertia);
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI(mass, fallMotionState, fallShape, fallInertia);
-	fallRigidBodyCI.m_restitution = 0.8;
-	fallRigidBody = new btRigidBody(fallRigidBodyCI);
-	dynamicsWorld->addRigidBody(fallRigidBody);
-
-	btDefaultMotionState* fallMotionState2 = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 5, 0)));
-	btScalar mass2 = 1;
-	btVector3 fallInertia2(0, 0, 0);
-	fallShape->calculateLocalInertia(mass2, fallInertia2);
-	btRigidBody::btRigidBodyConstructionInfo fallRigidBodyCI2(mass2, fallMotionState2, fallShape, fallInertia2);
-	fallRigidBodyCI2.m_restitution = 0;
-	fallRigidBody2 = new btRigidBody(fallRigidBodyCI2);
-	fallRigidBody2->setCollisionFlags(fallRigidBody2->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
-	fallRigidBody2->setActivationState(DISABLE_DEACTIVATION);
-	dynamicsWorld->addRigidBody(fallRigidBody2);*/
 
 	tm = new TriangleMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
 	dynamicsWorld->addRigidBody(tm->getRigidBody());
@@ -223,7 +157,7 @@ void RenderSceneCB()
 	float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
 	float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
-	dynamicsWorld->stepSimulation(1/30.f, 10000, 1/100.f);
+	dynamicsWorld->stepSimulation(1/20.f, 10000, 1/100.f);
 
 	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.001f, 1000.0f);
 	//mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
@@ -251,6 +185,13 @@ void RenderSceneCB()
 	p3->updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
 	p3->drawObject(programID, mvp);
 	if (debug) cout << "x:" << trans.getOrigin().getX() << " y:" << trans.getOrigin().getY() << " z:" << trans.getOrigin().getZ() << endl << endl;
+
+	for (std::list<Point>::iterator it = points.begin(); it != points.end(); ++it)
+	{
+		(*it).getRigidBody()->getMotionState()->getWorldTransform(trans);
+		(*it).updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
+		(*it).drawObject(programID, mvp);
+	}
 
 	tm->drawObject(programID, mvp);
 
@@ -295,4 +236,17 @@ void Timer(int value)
 {
 	glutPostRedisplay();
 	glutTimerFunc(10, Timer, 0);
+}
+
+void mouseClick(int button, int state, int x, int y)
+{
+	float xs = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
+	float ys = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
+
+	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	{
+		points.push_back(Point(vec3(xs, ys, 0)));
+		points.back().getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
+		dynamicsWorld->addRigidBody(points.back().getRigidBody());
+	}
 }

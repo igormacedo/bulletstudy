@@ -36,7 +36,7 @@ void Point::setupBulletRigidBody()
 	sphereShape->calculateLocalInertia(massRigidBody, sphereInertia);
 	sphereRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(mass, sphereMotionState, sphereShape, sphereInertia);
 	sphereRigidBody = new btRigidBody(*sphereRigidBodyCI);
-	sphereRigidBody->setRestitution(btScalar(0.95));
+	sphereRigidBody->setRestitution(btScalar(1));
 }
 
 btRigidBody* Point::getRigidBody()

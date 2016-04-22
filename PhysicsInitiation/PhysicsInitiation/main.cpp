@@ -9,6 +9,10 @@
 
 #include <list>
 #include <iostream>
+#include <time.h>
+
+clock_t t;
+float redrawtime;
 
 using namespace std;
 using namespace Managers;
@@ -69,6 +73,8 @@ bool debug = false;
 
 void main(int argc, char** argv)
 {
+	t = clock();
+
 	//OPENGL initialization =============================================
 
 	glutInit(&argc, argv);
@@ -95,6 +101,9 @@ void main(int argc, char** argv)
 	//glGenBuffers(1, &indexBuffer);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 2 * 3 * sizeof(GLuint), &indexData[0], GL_STATIC_DRAW);
+
+
+
 
 	cout << "OpenGL Version: " << (char*)glGetString(GL_VERSION) << " | Shader Language Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << "| Glut Version : " << glutGet(GLUT_VERSION) << endl;
 
@@ -137,6 +146,10 @@ void main(int argc, char** argv)
 	//=============================================================
 
 	installShaders();
+
+	t = clock() - t;
+	cout << "It took " << ((float)t) / CLOCKS_PER_SEC << " seconds to initialize." << endl;
+
 	glutMainLoop();
 
 	//== exit ====================================================
@@ -150,6 +163,7 @@ void main(int argc, char** argv)
 
 void RenderSceneCB()
 {
+	t = clock();
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
@@ -157,7 +171,7 @@ void RenderSceneCB()
 	float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
 	float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
-	dynamicsWorld->stepSimulation(1/20.f, 10000, 1/100.f);
+	dynamicsWorld->stepSimulation(redrawtime, 10000, 1/120.f);
 
 	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.001f, 1000.0f);
 	//mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
@@ -196,6 +210,7 @@ void RenderSceneCB()
 	tm->drawObject(programID, mvp);
 
 	glutSwapBuffers();
+	
 }
 
 void installShaders()
@@ -233,9 +248,13 @@ void MouseMotion(int x, int y)
 }
 
 void Timer(int value)
-{
+{	
 	glutPostRedisplay();
 	glutTimerFunc(10, Timer, 0);
+	t = clock() - t;
+	//t_time = ((float)t) / CLOCKS_PER_SEC;
+	redrawtime = ((float)t) / CLOCKS_PER_SEC;
+	cout << "It took " << redrawtime << " seconds to redraw." << endl;
 }
 
 void mouseClick(int button, int state, int x, int y)

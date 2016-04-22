@@ -41,7 +41,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;$(IncludePath)</IncludePath>
+    <IncludePath>$(IncludePath)</IncludePath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
@@ -54,13 +54,13 @@
       <Optimization>Disabled</Optimization>
       <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;C:\Users\Igor Macedo\Downloads\bullet3-2.83.7\bullet3-2.83.7\src;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
-      <AdditionalLibraryDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet\lib\Debug;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
+      <AdditionalLibraryDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <AdditionalDependencies>freeglut.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
   </ItemDefinitionGroup>
@@ -74,13 +74,15 @@
       <IntrinsicFunctions>true</IntrinsicFunctions>
       <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;_LIB;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <SDLCheck>true</SDLCheck>
-      <AdditionalIncludeDirectories>C:\Users\Igor Macedo\Downloads\bullet3-2.83.7\bullet3-2.83.7\src;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\bullet;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
     </ClCompile>
     <Link>
       <SubSystem>Console</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <EnableCOMDATFolding>true</EnableCOMDATFolding>
       <OptimizeReferences>true</OptimizeReferences>
+      <AdditionalDependencies>freeglut.lib;glew32.lib;opengl32.lib;%(AdditionalDependencies)</AdditionalDependencies>
+      <AdditionalLibraryDirectories>C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;C:\Users\Pesquisador\Documents\Visual Studio 2013\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\freeglut;C:\Users\Igor Macedo\Documents\Projects\bulletstudy\PhysicsInitiation\PhysicsInitiation\Dependencies\glew;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>

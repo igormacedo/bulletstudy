@@ -243,7 +243,7 @@ void specialKeys(int key, int x, int y) {
 
 void UpdateCubePosition()
 {
-	dynamicsWorld->removeRigidBody(tm->getRigidBody());
+	/*dynamicsWorld->removeRigidBody(tm->getRigidBody());
 	delete tm;
 
 	for (int i = 0; i < sizeof(vertexDataforIndex)/sizeof(GLfloat); i += 8)
@@ -268,8 +268,15 @@ void UpdateCubePosition()
 	}
 
 	tm = new TriangleMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
-	dynamicsWorld->addRigidBody(tm->getRigidBody());
+	dynamicsWorld->addRigidBody(tm->getRigidBody());*/
 
+	//GIMPACT use 	http://bulletphysics.org/Bullet/phpBB3/viewtopic.php?f=9&t=2130&start=0
+
+
+	btTransform trans;
+	tm->getRigidBody()->getMotionState()->getWorldTransform(trans);
+	trans.setOrigin(btVector3(mousePositionx, mousePositiony+20, 0));
+	tm->getRigidBody()->getMotionState()->setWorldTransform(trans);
 }
 
 

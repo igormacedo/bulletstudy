@@ -48,6 +48,12 @@ void TriangleMesh::setupBulletRigidBody()
 
 	triangleMeshShape = new btBvhTriangleMeshShape(mTriMesh,true);
 	triangleMeshMotionState = new btDefaultMotionState(btTransform(btQuaternion(0, 0, 0, 1), btVector3(0, 0, 0)));
+
+	//btVector3 triangleMeshInertia(0, 0, 0);
+	//triangleMeshShape->calculateLocalInertia(1, triangleMeshInertia);
+	//triangleMeshRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(0, triangleMeshMotionState, triangleMeshShape, triangleMeshInertia);
+
+
 	triangleMeshRigidBodyCI = new btRigidBody::btRigidBodyConstructionInfo(0, triangleMeshMotionState, triangleMeshShape, btVector3(0, 0, 0));
 	triangleMeshRigidBody = new btRigidBody(*triangleMeshRigidBodyCI);
 	triangleMeshRigidBody->setRestitution(btScalar(0.95));

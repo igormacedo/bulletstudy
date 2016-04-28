@@ -171,7 +171,7 @@ void RenderSceneCB()
 	float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
 	float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
-	dynamicsWorld->stepSimulation(redrawtime, 10000, 1/120.f);
+	dynamicsWorld->stepSimulation(1/100.f, 1000, 1/60.f);
 
 	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.001f, 1000.0f);
 	//mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
@@ -262,10 +262,13 @@ void mouseClick(int button, int state, int x, int y)
 	float xs = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
 	float ys = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
-	if (button == GLUT_LEFT_BUTTON && state == GLUT_DOWN)
+	if (button == GLUT_LEFT_BUTTON)// && state == GLUT_DOWN)
 	{
-		points.push_back(Point(vec3(xs, ys, 0)));
-		points.back().getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
-		dynamicsWorld->addRigidBody(points.back().getRigidBody());
+		for (int i = 0; i < 10; i++)
+		{
+			points.push_back(Point(vec3(xs, ys, 0)));
+			points.back().getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
+			dynamicsWorld->addRigidBody(points.back().getRigidBody());
+		}
 	}
 }

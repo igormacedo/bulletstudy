@@ -25,8 +25,10 @@ int height = width*screenRatio;
 float orthoHalfWidth = 66.66f;
 float orthoHalfHeight = orthoHalfWidth*screenRatio;
 
-int mousePositionx;
-int mousePositiony;
+float mousePositionx;
+float mousePositiony;
+float mousePositionxBefore;
+float mousePositionyBefore;
 
 float rotate_x = 0;
 float rotate_y = 0;
@@ -59,6 +61,7 @@ void specialKeys(int, int, int);
 void MouseMotion(int, int);
 void Timer(int);
 void mouseClick(int, int, int, int);
+void UpdateCubePosition();
 
 
 //
@@ -101,9 +104,6 @@ void main(int argc, char** argv)
 	//glGenBuffers(1, &indexBuffer);
 	//glBindBuffer(GL_ELEMENT_ARRAY_BUFFER, indexBuffer);
 	//glBufferData(GL_ELEMENT_ARRAY_BUFFER, 6 * 2 * 3 * sizeof(GLuint), &indexData[0], GL_STATIC_DRAW);
-
-
-
 
 	cout << "OpenGL Version: " << (char*)glGetString(GL_VERSION) << " | Shader Language Version: " << (char*)glGetString(GL_SHADING_LANGUAGE_VERSION) << "| Glut Version : " << glutGet(GLUT_VERSION) << endl;
 
@@ -168,8 +168,8 @@ void RenderSceneCB()
 	glEnable(GL_DEPTH_TEST);
 	glDepthFunc(GL_LESS);
 
-	float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
-	float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
+	//float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
+	//float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
 	dynamicsWorld->stepSimulation(1/100.f, 1000, 1/60.f);
 
@@ -184,11 +184,11 @@ void RenderSceneCB()
 
 	btTransform trans;
 	point->getRigidBody()->getMotionState()->getWorldTransform(trans);
-	trans.setOrigin(btVector3(x, y, 0));
-	point->updatePosition(vec3(x, y, 0));
+	trans.setOrigin(btVector3(mousePositionx, mousePositiony, 0));
+	point->updatePosition(vec3(mousePositionx, mousePositiony, 0));
 	point->getRigidBody()->getMotionState()->setWorldTransform(trans);
 	point->drawObject(programID, mvp);
-	if (debug) cout << "x:" << x << " y:" << y << " z:" << 0 << endl;
+	if (debug) cout << "x:" << mousePositionx << " y:" << mousePositiony << " z:" << 0 << endl;
 
 	p2->getRigidBody()->getMotionState()->getWorldTransform(trans);
 	p2->updatePosition(vec3(trans.getOrigin().getX(), trans.getOrigin().getY(), trans.getOrigin().getZ()));
@@ -241,10 +241,46 @@ void specialKeys(int key, int x, int y) {
 
 }
 
+void UpdateCubePosition()
+{
+	dynamicsWorld->removeRigidBody(tm->getRigidBody());
+	delete tm;
+
+	for (int i = 0; i < sizeof(vertexDataforIndex)/sizeof(GLfloat); i += 8)
+	{
+		if (mousePositionx > mousePositionxBefore)
+		{
+			vertexDataforIndex[i] = vertexDataforIndex[i] + (mousePositionx - mousePositionxBefore);
+		}
+		else if (mousePositionx < mousePositionxBefore)
+		{
+			vertexDataforIndex[i] = vertexDataforIndex[i] - (mousePositionxBefore - mousePositionx);
+		}
+
+		if (mousePositiony > mousePositionxBefore)
+		{
+			vertexDataforIndex[i + 1] = vertexDataforIndex[i + 1] + ((mousePositiony - mousePositionyBefore));
+		}
+		else if (mousePositiony < mousePositionxBefore)
+		{
+			vertexDataforIndex[i + 1] = vertexDataforIndex[i + 1] - ((mousePositionyBefore - mousePositiony));
+		}
+	}
+
+	tm = new TriangleMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
+	dynamicsWorld->addRigidBody(tm->getRigidBody());
+
+}
+
+
 void MouseMotion(int x, int y)
 {
-	mousePositionx = x;
-	mousePositiony = y;
+	mousePositionxBefore = mousePositionx;
+	mousePositionyBefore = mousePositiony;
+	mousePositionx = (((float)x - width / 2.0f) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
+	mousePositiony = -(((float)y - height / 2.0f) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
+	
+	UpdateCubePosition();
 }
 
 void Timer(int value)
@@ -259,14 +295,11 @@ void Timer(int value)
 
 void mouseClick(int button, int state, int x, int y)
 {
-	float xs = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
-	float ys = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
-
 	if (button == GLUT_LEFT_BUTTON)// && state == GLUT_DOWN)
 	{
 		for (int i = 0; i < 10; i++)
 		{
-			points.push_back(Point(vec3(xs, ys, 0)));
+			points.push_back(Point(vec3(mousePositionx, mousePositiony, 0)));
 			points.back().getRigidBody()->setLinearFactor(btVector3(1, 1, 0));
 			dynamicsWorld->addRigidBody(points.back().getRigidBody());
 		}

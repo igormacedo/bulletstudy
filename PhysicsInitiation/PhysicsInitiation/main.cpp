@@ -6,6 +6,9 @@
 #include "btBulletDynamicsCommon.h"
 #include "Point.h"
 #include "TriangleMesh.h"
+#include "GimpactMesh.h"
+#include "BulletCollision\Gimpact\btGImpactCollisionAlgorithm.h"
+#include "BulletCollision\Gimpact\btGImpactShape.h"
 
 #include <list>
 #include <iostream>
@@ -67,7 +70,7 @@ void UpdateCubePosition();
 //
 list<Point> points;
 Point *point, *p2, *p3;
-TriangleMesh *tm;
+GimpactMesh *tm;
 
 // Global Bullet objects
 btDiscreteDynamicsWorld* dynamicsWorld;
@@ -117,6 +120,8 @@ void main(int argc, char** argv)
 	btSequentialImpulseConstraintSolver* solver = new btSequentialImpulseConstraintSolver;
 
 	dynamicsWorld = new btDiscreteDynamicsWorld(dispatcher, broadphase, solver, collisionConfiguration);
+	//Registering GIMPACT for use
+	btGImpactCollisionAlgorithm::registerAlgorithm(dispatcher);
 	dynamicsWorld->setGravity(btVector3(0, -9.8, 0));
 
 	btCollisionShape* groundShape = new btStaticPlaneShape(btVector3(0, 1, 0), 1);
@@ -126,7 +131,10 @@ void main(int argc, char** argv)
 	groundRigidBody->setRestitution(btScalar(1));
 	dynamicsWorld->addRigidBody(groundRigidBody);
 
-	tm = new TriangleMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
+	// Setting up objects
+	tm = new GimpactMesh(vertexDataforIndex, indexData, sizeof(vertexDataforIndex), sizeof(indexData));
+	tm->getRigidBody()->setCollisionFlags(tm->getRigidBody()->getCollisionFlags() | btCollisionObject::CF_KINEMATIC_OBJECT);
+	tm->getRigidBody()->setActivationState(DISABLE_DEACTIVATION);
 	dynamicsWorld->addRigidBody(tm->getRigidBody());
 
 	point = new Point(vec3(0.0, 10, 0.0));
@@ -171,7 +179,7 @@ void RenderSceneCB()
 	//float x = ((mousePositionx - width / 2) / (float)(width / 2))*orthoHalfWidth;//* 115.2;
 	//float y = -((mousePositiony - height / 2) / (float)(height / 2))*orthoHalfHeight;//*-86.5;
 
-	dynamicsWorld->stepSimulation(1/100.f, 1000, 1/60.f);
+	dynamicsWorld->stepSimulation(1/100.f, 1000, 1/120.f);
 
 	mat4 projectionMatrix = glm::ortho(-orthoHalfWidth, orthoHalfWidth, -orthoHalfHeight, orthoHalfHeight, 0.001f, 1000.0f);
 	//mat4 projectionMatrix = glm::perspective(glm::radians(90.0f), (GLfloat)width / (GLfloat)height, 0.1f, 100.0f);
@@ -227,13 +235,13 @@ void specialKeys(int key, int x, int y) {
 		rotate_x += 0.1;
 
 	//  Left arrow - decrease rotation by 5 degree
-	else if (key == GLUT_KEY_LEFT)
+	if (key == GLUT_KEY_LEFT)
 		rotate_x -= 0.1;
 
-	else if (key == GLUT_KEY_UP)
+	if (key == GLUT_KEY_UP)
 		rotate_y += 0.1;
 
-	else if (key == GLUT_KEY_DOWN)
+	if (key == GLUT_KEY_DOWN)
 		rotate_y -= 0.1;
 
 	//  Request display update
@@ -275,8 +283,11 @@ void UpdateCubePosition()
 
 	btTransform trans;
 	tm->getRigidBody()->getMotionState()->getWorldTransform(trans);
-	trans.setOrigin(btVector3(mousePositionx, mousePositiony+20, 0));
+	trans.setOrigin(btVector3(mousePositionx, mousePositiony, 0));
 	tm->getRigidBody()->getMotionState()->setWorldTransform(trans);
+	btGImpactMeshShape *gm = (btGImpactMeshShape*)tm->getRigidBody()->getCollisionShape();
+	gm->postUpdate();
+	tm->updateGraphicsPosition();
 }
 
 

@@ -456,6 +456,9 @@
     <ClCompile Include="TriangleMesh.cpp">
       <Filter>Objects</Filter>
     </ClCompile>
+    <ClCompile Include="GimpactMesh.cpp">
+      <Filter>Objects</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Particle.h">
@@ -1095,6 +1098,9 @@
       <Filter>Objects</Filter>
     </ClInclude>
     <ClInclude Include="TriangleMesh.h">
+      <Filter>Objects</Filter>
+    </ClInclude>
+    <ClInclude Include="GimpactMesh.h">
       <Filter>Objects</Filter>
     </ClInclude>
   </ItemGroup>
